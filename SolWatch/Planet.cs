@@ -6,7 +6,7 @@ namespace SolWatch
     public class Planet
     {
         public string Name { get; }
-        public float SemiMajorAxis { get; } // AU
+        public float SemiMajorAxis { get; } // km
         public float LongitudeOfAscendingNode { get; } // radians
         public float ArgumentOfPeriapsis { get; } // radians
         public List<SolarPosition> Anomalies { get; }
@@ -21,7 +21,7 @@ namespace SolWatch
         }
 
         /// <summary>
-        /// Gets the planet's position at a given DateTime as a angle through it's orbit.
+        /// Gets the planet's position at a given DateTime as an angle through its orbit.
         /// </summary>
         /// <param name="epoch">The moment at which you want the planet's position.</param>
         /// <returns>Mean/true anomaly (approximating a circular orbit) of the planet at the requested epoch. Angle through its orbit, in radians.</returns>
