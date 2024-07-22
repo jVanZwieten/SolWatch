@@ -92,20 +92,20 @@ namespace SolWatch
                 sourceRectangle: null,
                 color: Color.Gold,
                 rotation: 0f,
-                origin: new Vector2(solTexture.Width / 2, solTexture.Height / 2),
+                origin: solTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
             // Draw Neptune's Orbit
             spriteBatch.Draw(
-                texture: orbitTexture,
+                texture: orbitTexture, //
                 destinationRectangle: new Rectangle(
                     location: screenCenter,
-                    size: maxOrbitSizeInPixels),
+                    size: maxOrbitSizeInPixels), //
                 sourceRectangle: null,
-                color: Color.SeaGreen,
+                color: Color.SeaGreen, //
                 rotation: 0f,
-                origin: new Vector2(orbitTexture.Width / 2, orbitTexture.Height / 2),
+                origin: orbitTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
