@@ -48,7 +48,8 @@ namespace SolWatch
                 name: "Neptune",
                 semiMajorAxis: 4.5e9f,
                 longitudeOfAscendingNode: SolWatch.Utilities.RadiansFromDegrees(48.331f),
-                argumentOfPeriapsis: SolWatch.Utilities.RadiansFromDegrees(273.187f)
+                argumentOfPeriapsis: SolWatch.Utilities.RadiansFromDegrees(273.187f),
+                referencePosition: new EpochAnomaly(new DateTime(2024, 7, 21), 259.883f)
                 );
 
             kmToPixelsMultiplier = maxOrbitRadiusInPixels / neptune.SemiMajorAxis;
