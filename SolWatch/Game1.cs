@@ -42,7 +42,7 @@ namespace SolWatch
 
             celestialBodySymbolSize = new Point(50, 50);
 
-            maxOrbitRadiusInPixels = graphics.PreferredBackBufferHeight / 2;
+            maxOrbitRadiusInPixels = (graphics.PreferredBackBufferHeight / 2) - 50;
             maxOrbitSizeInPixels = new Point(maxOrbitRadiusInPixels * 2, maxOrbitRadiusInPixels * 2);
 
             neptune = new Planet(
@@ -100,8 +100,8 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: arrowTexture,
                 destinationRectangle: new Rectangle(
-                    location: new Point(100, 180),
-                    size: new Point(80, 80)),
+                    location: new Point(screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels),
+                    size: new Point(celestialBodySymbolSize.X + 30, celestialBodySymbolSize.Y + 30)),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
@@ -113,7 +113,7 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: ariesTexture,
                 destinationRectangle: new Rectangle(
-                    location: new Point (100, 100),
+                    location: new Point (screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels + 60),
                     size: celestialBodySymbolSize),
                 sourceRectangle: null,
                 color: Color.White,
