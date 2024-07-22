@@ -5,12 +5,12 @@ namespace SolWatch
     public readonly struct EpochAnomaly
     {
         public DateTime Epoch { get; }
-        public float TrueAnomaly { get; } // radians
+        public float Anomaly { get; } // radians
 
-        public EpochAnomaly(DateTime epoch, float trueAnomaly)
+        public EpochAnomaly(DateTime epoch, float anomaly)
         {
             Epoch = epoch;
-            TrueAnomaly = trueAnomaly;
+            Anomaly = anomaly;
         }
     }
 }

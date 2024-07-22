@@ -4,7 +4,7 @@
     public class PlanetTests
     {
         const float angularAccuracyDegrees = .1f;
-        readonly Planet[] Planets =
+        readonly Planet[] testPlanets =
         {
             new(
                 name: "Earth",
@@ -20,12 +20,15 @@
         [DataRow("Earth", 2025, 1, 6, 165.19f)]
         public void AnomalyTest(string planetName, int year, int month, int day, float expectedOutputDegrees)
         {
-            var planet = Planets.Where(planet => planet.Name == planetName).FirstOrDefault();
+            var testPlanet = testPlanets.Where(planet => planet.Name == planetName).FirstOrDefault();
             var epoch = new DateTime(year, month, day);
 
-            var result = planet.Anomaly(epoch);
+            var result = testPlanet.Anomaly(epoch);
 
-            Assert.AreEqual(Utilities.RadiansFromDegrees(expectedOutputDegrees), result, Utilities.RadiansFromDegrees(angularAccuracyDegrees));
+            Assert.AreEqual(
+                Utilities.RadiansFromDegrees(expectedOutputDegrees),
+                result,
+                Utilities.RadiansFromDegrees(angularAccuracyDegrees));
         }
     }
 }
