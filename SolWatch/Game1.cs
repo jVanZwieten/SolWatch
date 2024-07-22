@@ -98,12 +98,12 @@ namespace SolWatch
 
             // Draw Neptune's Orbit
             spriteBatch.Draw(
-                texture: orbitTexture, //
+                texture: orbitTexture,
                 destinationRectangle: new Rectangle(
                     location: screenCenter,
-                    size: maxOrbitSizeInPixels), //
+                    size: maxOrbitSizeInPixels),
                 sourceRectangle: null,
-                color: Color.SeaGreen, //
+                color: Color.SeaGreen,
                 rotation: 0f,
                 origin: orbitTexture.Center(),
                 effects: SpriteEffects.None,
