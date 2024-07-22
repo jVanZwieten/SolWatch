@@ -8,16 +8,17 @@ namespace SolWatch
     public class Game1 : Game
     {
         Texture2D solTexture;
-        Point screenCenter;
-
         Texture2D orbitTexture;
+        Texture2D ariesTexture;
+        Texture2D arrowTexture;
+
+        Point screenCenter;
+        Point celestialBodySymbolSize;
         int maxOrbitRadiusInPixels;
         Point maxOrbitSizeInPixels;
         float kmToPixelsMultiplier;
 
         Planet neptune;
-        
-        Point celestialBodySymbolSize;
         
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -60,10 +61,10 @@ namespace SolWatch
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
-            solTexture = Content.Load<Texture2D>("sol_symbol");
+            solTexture = Content.Load<Texture2D>("sol-symbol");
             orbitTexture = Content.Load<Texture2D>("dotted-circle");
-
+            arrowTexture = Content.Load<Texture2D>("white-arrow");
+            ariesTexture = Content.Load<Texture2D>("aries-symbol");
         }
 
         protected override void Update(GameTime gameTime)
@@ -92,6 +93,32 @@ namespace SolWatch
                 color: Color.Gold,
                 rotation: 0f,
                 origin: new Vector2(solTexture.Width / 2, solTexture.Height / 2),
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+            // Draw "North" arrow
+            spriteBatch.Draw(
+                texture: arrowTexture,
+                destinationRectangle: new Rectangle(
+                    location: new Point(100, 180),
+                    size: new Point(80, 80)),
+                sourceRectangle: null,
+                color: Color.White,
+                rotation: 0f,
+                origin: new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2),
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
+
+            // Draw Aries
+            spriteBatch.Draw(
+                texture: ariesTexture,
+                destinationRectangle: new Rectangle(
+                    location: new Point (100, 100),
+                    size: celestialBodySymbolSize),
+                sourceRectangle: null,
+                color: Color.White,
+                rotation: 0f,
+                origin: new Vector2(ariesTexture.Width / 2, ariesTexture.Height / 2),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
