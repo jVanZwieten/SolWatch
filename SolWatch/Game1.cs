@@ -51,7 +51,7 @@ namespace SolWatch
                 argumentOfPeriapsis: SolWatch.Utilities.RadiansFromDegrees(273.187f)
                 );
 
-            kmToPixelsMultiplier = ((maxOrbitRadiusInPixels * 2) / neptune.SemiMajorAxis);
+            kmToPixelsMultiplier = maxOrbitRadiusInPixels / neptune.SemiMajorAxis;
 
             base.Initialize();
         }
@@ -107,7 +107,9 @@ namespace SolWatch
                 origin: new Vector2(orbitTexture.Width / 2, orbitTexture.Height / 2),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
+
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }
