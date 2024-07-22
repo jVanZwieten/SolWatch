@@ -93,7 +93,7 @@ namespace SolWatch
                 sourceRectangle: null,
                 color: Color.Gold,
                 rotation: 0f,
-                origin: new Vector2(solTexture.Width / 2, solTexture.Height / 2),
+                origin: solTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
@@ -132,7 +132,7 @@ namespace SolWatch
                 sourceRectangle: null,
                 color: Color.SeaGreen,
                 rotation: 0f,
-                origin: new Vector2(orbitTexture.Width / 2, orbitTexture.Height / 2),
+                origin: orbitTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
