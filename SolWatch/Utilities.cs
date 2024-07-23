@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Numerics;
 
 namespace SolWatch
 {
@@ -22,5 +22,16 @@ namespace SolWatch
         }
 
         public static Vector2 Center(this Texture2D texture) => new(texture.Width / 2, texture.Height / 2);
+
+        public static float PixelsFromKilometers(float kilometers, float kmToPixelsFactor) => (int)(kilometers * kmToPixelsFactor);
+
+        public static Point CartesianFromPolar(float angleInRadians, float distanceInPixels)
+        {
+            var adjacentSideInKilometers = MathF.Cos(angleInRadians) * distanceInPixels;
+            var oppositeSideInKilometers = MathF.Sin(angleInRadians) * distanceInPixels;
+
+            return new Point((int)adjacentSideInKilometers, (int)oppositeSideInKilometers);
+        }
+
     }
 }
