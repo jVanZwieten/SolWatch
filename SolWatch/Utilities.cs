@@ -23,7 +23,7 @@ namespace SolWatch
 
         public static Vector2 Center(this Texture2D texture) => new(texture.Width / 2, texture.Height / 2);
 
-        public static float PixelsFromKilometers(float kilometers, float kmToPixelsFactor) => (int)(kilometers * kmToPixelsFactor);
+        public static int PixelsFromKilometers(float kilometers, float kmToPixelsFactor) => (int)(kilometers * kmToPixelsFactor);
 
         public static Point CartesianFromPolar(float angleInRadians, float distanceInPixels)
         {
