@@ -40,7 +40,7 @@ namespace SolWatch.Tests
         [DataRow("Earth", 2025, 1, 6, 4.6798f)]
         public void TrueLongitudeAtEpochTest(string planetName, int year, int month, int day, float expectedOutputRadians)
         {
-            var testPlanet = testPlanets.Where(planet => planet.Name == planetName).FirstOrDefault();
+            var testPlanet = testPlanets.FirstOrDefault(planet => planet.Name == planetName);
             var epoch = new DateTime(year, month, day);
 
             var result = testPlanet.TrueLongitudeAtEpoch(epoch);
