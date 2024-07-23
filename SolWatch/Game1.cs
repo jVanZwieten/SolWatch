@@ -8,7 +8,7 @@ namespace SolWatch
 {
     public class Game1 : Game
     {
-        const int celestialBodySymbolLength = 50;
+        readonly Point celestialBodySymbolSize = new(50, 50);
 
         Texture2D solTexture;
         Texture2D orbitTexture;
@@ -34,17 +34,19 @@ namespace SolWatch
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             screenCenter = new Point(
                 graphics.PreferredBackBufferWidth / 2,
                 graphics.PreferredBackBufferHeight / 2);
 
             maxOrbitRadiusInPixels = (graphics.PreferredBackBufferHeight / 2) - 50;
 
-            kmToPixelsFactor = maxOrbitRadiusInPixels / SolarSystemData.Data.FirstOrDefault(d => d.Planet.Name == "Neptune").Planet.SemiMajorAxis;
+            kmToPixelsFactor = maxOrbitRadiusInPixels / SolarSystemData.Planets.FirstOrDefault(p => p.Name == "Neptune").SemiMajorAxis;
 
-            foreach (var planetRenderData in SolarSystemData.Data)
-                planetRenderData.Anomaly = planetRenderData.Planet.Anomaly(DateTime.Now);
+            foreach (var renderData in SolarSystemData.RenderDatas)
+            {
+                var planet = SolarSystemData.Planets.FirstOrDefault(p => p.Name == renderData.PlanetName);
+                // todo: calc radius & angle using Utility functions
+            }
 
             base.Initialize();
         }
@@ -63,8 +65,8 @@ namespace SolWatch
 
         void PopulatePlanetSprites()
         {
-            foreach (var planetRenderData in SolarSystemData.Data)
-                planetRenderData.Symbol = Content.Load<Texture2D>(planetRenderData.SpriteName);
+            foreach (var renderData in SolarSystemData.RenderDatas)
+                renderData.Symbol = Content.Load<Texture2D>(renderData.SpriteName);
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,15 +74,12 @@ namespace SolWatch
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            var celestialBodySymbolSize = new Point(celestialBodySymbolLength, celestialBodySymbolLength);
 
             spriteBatch.Begin();
 
@@ -101,12 +100,12 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: arrowTexture,
                 destinationRectangle: new Rectangle(
-                    location: new Point(screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels),
+                    location: screenCenter - new Point(maxOrbitRadiusInPixels, maxOrbitRadiusInPixels),
                     size: celestialBodySymbolSize + new Point(30, 30)),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
-                origin: new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2),
+                origin: arrowTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
@@ -114,30 +113,30 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: ariesTexture,
                 destinationRectangle: new Rectangle(
-                    location: new Point(screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels + 60),
+                    location: screenCenter - new Point(maxOrbitRadiusInPixels, maxOrbitRadiusInPixels + 60),
                     size: celestialBodySymbolSize),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
-                origin: new Vector2(ariesTexture.Width / 2, ariesTexture.Height / 2),
+                origin: ariesTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-            foreach (var planetRenderData in SolarSystemData.Data)
-                DrawPlanetOrbit(planetRenderData.Symbol, (int)(planetRenderData.Planet.SemiMajorAxis * kmToPixelsFactor), planetRenderData.Anomaly, planetRenderData.Color);
+            foreach (var renderData in SolarSystemData.RenderDatas)
+                DrawPlanetOrbit(renderData.Symbol, renderData.Radius, renderData.Angle, renderData.Color);
 
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        void DrawPlanetOrbit(Texture2D planetSprite, int orbitSize, float angle, Color color)
+        void DrawPlanetOrbit(Texture2D planetSprite, int orbitRadius, float angle, Color color)
         {
             spriteBatch.Draw(
                 texture: orbitTexture,
                 destinationRectangle: new Rectangle(
                     location: screenCenter,
-                    size: new(orbitSize * 2, orbitSize * 2)),
+                    size: new(orbitRadius * 2, orbitRadius * 2)),
                 sourceRectangle: null,
                 color: color,
                 rotation: 0f,
@@ -148,8 +147,8 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: planetSprite,
                 destinationRectangle: new Rectangle(
-                    location: screenCenter + new Point(0, -orbitSize), // todo: calculate cartesian position of planet sprite
-                    size: new(celestialBodySymbolLength, celestialBodySymbolLength)),
+                    location: screenCenter + new Point(0, -orbitRadius), // todo: calculate cartesian position of planet sprite
+                    size: celestialBodySymbolSize),
                 sourceRectangle: null,
                 color: color,
                 rotation: 0f,

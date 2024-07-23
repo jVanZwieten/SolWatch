@@ -21,7 +21,7 @@ namespace SolWatch
             {
                 longitudeOfAscendingNode = Utilities.RadiansFromDegrees(longitudeOfAscendingNode);
                 argumentOfPeriapsis = Utilities.RadiansFromDegrees(argumentOfPeriapsis);
-                referenceEpochAnomaly = new EpochAnomaly(referenceEpochAnomaly.Epoch, Utilities.RadiansFromDegrees(this.referenceEpochAnomaly.Anomaly));
+                referenceEpochAnomaly = new EpochAnomaly(referenceEpochAnomaly.Epoch, Utilities.RadiansFromDegrees(referenceEpochAnomaly.Anomaly));
             }
 
             Name = name;
