@@ -8,7 +8,10 @@ namespace SolWatch
 {
     public class Game1 : Game
     {
-        readonly Point celestialBodySymbolSize = new(50, 50);
+        readonly Point celestialBodySymbolSize = new(20, 20);
+        readonly Point ariesSymbolSize=new(50, 50);
+        readonly Point ariesSeekingArrowSize=new(70, 70);
+        readonly DateTime renderEpoch = DateTime.Now;
 
         Texture2D solTexture;
         Texture2D orbitTexture;
@@ -45,7 +48,8 @@ namespace SolWatch
             foreach (var renderData in SolarSystemData.RenderDatas)
             {
                 var planet = SolarSystemData.Planets.FirstOrDefault(p => p.Name == renderData.PlanetName);
-                // todo: calc radius & angle using Utility functions
+                renderData.Angle = planet.TrueLongitudeAtEpoch(renderEpoch);
+                renderData.Radius = Utilities.PixelsFromKilometers(planet.SemiMajorAxis, kmToPixelsFactor);
             }
 
             base.Initialize();
@@ -96,12 +100,14 @@ namespace SolWatch
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
+            var ariesRosePosition = screenCenter - new Point(maxOrbitRadiusInPixels, maxOrbitRadiusInPixels);
+
             // Draw "North" arrow
             spriteBatch.Draw(
                 texture: arrowTexture,
                 destinationRectangle: new Rectangle(
-                    location: screenCenter - new Point(maxOrbitRadiusInPixels, maxOrbitRadiusInPixels),
-                    size: celestialBodySymbolSize + new Point(30, 30)),
+                    location: ariesRosePosition,
+                    size: ariesSeekingArrowSize),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
@@ -113,8 +119,8 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: ariesTexture,
                 destinationRectangle: new Rectangle(
-                    location: screenCenter - new Point(maxOrbitRadiusInPixels, maxOrbitRadiusInPixels + 60),
-                    size: celestialBodySymbolSize),
+                    location: ariesRosePosition + new Point(0, 60),
+                    size: ariesSymbolSize),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
@@ -147,7 +153,7 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: planetSprite,
                 destinationRectangle: new Rectangle(
-                    location: screenCenter + new Point(0, -orbitRadius), // todo: calculate cartesian position of planet sprite
+                    location: screenCenter + Utilities.CartesianFromPolar(angle, orbitRadius),
                     size: celestialBodySymbolSize),
                 sourceRectangle: null,
                 color: color,
