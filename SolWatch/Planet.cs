@@ -15,13 +15,20 @@ namespace SolWatch
         float meanMotion { get => MathF.Sqrt(Utilities.GravitationalParameter_Sol / MathF.Pow(SemiMajorAxis, 3)); } // radians/s
         float period { get => Utilities.FullCircle / meanMotion; } // s
 
-        public Planet(string name, float semiMajorAxis, float longitudeOfAscendingNode, float argumentOfPeriapsis, EpochAnomaly referencePosition)
+        public Planet(string name, float semiMajorAxis, float longitudeOfAscendingNode, float argumentOfPeriapsis, EpochAnomaly referenceEpochAnomaly, bool anglesInDegrees = false)
         {
+            if (anglesInDegrees)
+            {
+                longitudeOfAscendingNode = Utilities.RadiansFromDegrees(longitudeOfAscendingNode);
+                argumentOfPeriapsis = Utilities.RadiansFromDegrees(argumentOfPeriapsis);
+                referenceEpochAnomaly = new EpochAnomaly(referenceEpochAnomaly.Epoch, Utilities.RadiansFromDegrees(this.referenceEpochAnomaly.Anomaly));
+            }
+
             Name = name;
             SemiMajorAxis = semiMajorAxis;
-            LongitudeOfAscendingNode = longitudeOfAscendingNode;
-            ArgumentOfPeriapsis = argumentOfPeriapsis;
-            this.referenceEpochAnomaly = referencePosition;
+            LongitudeOfAscendingNode = Utilities.NormalizeAngle(longitudeOfAscendingNode);
+            ArgumentOfPeriapsis = Utilities.NormalizeAngle(argumentOfPeriapsis);
+            this.referenceEpochAnomaly = new EpochAnomaly(referenceEpochAnomaly.Epoch, Utilities.NormalizeAngle(referenceEpochAnomaly.Anomaly));
         }
 
         /// <summary>
@@ -32,8 +39,8 @@ namespace SolWatch
         public float Anomaly(DateTime epoch)
         {
             var deltaTime = (float)(epoch - referenceEpochAnomaly.Epoch).TotalSeconds;
-            var deltaAnomaly=meanMotion*deltaTime;
-            var anomaly=referenceEpochAnomaly.Anomaly+deltaAnomaly;
+            var deltaAnomaly = meanMotion * deltaTime;
+            var anomaly = referenceEpochAnomaly.Anomaly + deltaAnomaly;
 
             return Utilities.NormalizeAngle(anomaly);
         }

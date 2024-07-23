@@ -2,24 +2,23 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 
 namespace SolWatch
 {
     public class Game1 : Game
     {
+        const int celestialBodySymbolLength = 50;
+
         Texture2D solTexture;
         Texture2D orbitTexture;
         Texture2D ariesTexture;
         Texture2D arrowTexture;
 
         Point screenCenter;
-        Point celestialBodySymbolSize;
         int maxOrbitRadiusInPixels;
-        Point maxOrbitSizeInPixels;
-        float kmToPixelsMultiplier;
+        float kmToPixelsFactor;
 
-        Planet neptune;
-        
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -40,20 +39,12 @@ namespace SolWatch
                 graphics.PreferredBackBufferWidth / 2,
                 graphics.PreferredBackBufferHeight / 2);
 
-            celestialBodySymbolSize = new Point(50, 50);
-
             maxOrbitRadiusInPixels = (graphics.PreferredBackBufferHeight / 2) - 50;
-            maxOrbitSizeInPixels = new Point(maxOrbitRadiusInPixels * 2, maxOrbitRadiusInPixels * 2);
 
-            neptune = new Planet(
-                name: "Neptune",
-                semiMajorAxis: 4.5e9f,
-                longitudeOfAscendingNode: SolWatch.Utilities.RadiansFromDegrees(48.331f),
-                argumentOfPeriapsis: SolWatch.Utilities.RadiansFromDegrees(273.187f),
-                referencePosition: new EpochAnomaly(new DateTime(2024, 7, 21), 259.883f)
-                );
+            kmToPixelsFactor = maxOrbitRadiusInPixels / SolarSystemData.Data.FirstOrDefault(d => d.Planet.Name == "Neptune").Planet.SemiMajorAxis;
 
-            kmToPixelsMultiplier = maxOrbitRadiusInPixels / neptune.SemiMajorAxis;
+            foreach (var planetRenderData in SolarSystemData.Data)
+                planetRenderData.Anomaly = planetRenderData.Planet.Anomaly(DateTime.Now);
 
             base.Initialize();
         }
@@ -66,6 +57,14 @@ namespace SolWatch
             orbitTexture = Content.Load<Texture2D>("dotted-circle");
             arrowTexture = Content.Load<Texture2D>("white-arrow");
             ariesTexture = Content.Load<Texture2D>("aries-symbol");
+
+            PopulatePlanetSprites();
+        }
+
+        void PopulatePlanetSprites()
+        {
+            foreach (var planetRenderData in SolarSystemData.Data)
+                planetRenderData.Symbol = Content.Load<Texture2D>(planetRenderData.SpriteName);
         }
 
         protected override void Update(GameTime gameTime)
@@ -81,6 +80,7 @@ namespace SolWatch
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            var celestialBodySymbolSize = new Point(celestialBodySymbolLength, celestialBodySymbolLength);
 
             spriteBatch.Begin();
 
@@ -102,7 +102,7 @@ namespace SolWatch
                 texture: arrowTexture,
                 destinationRectangle: new Rectangle(
                     location: new Point(screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels),
-                    size: new Point(celestialBodySymbolSize.X + 30, celestialBodySymbolSize.Y + 30)),
+                    size: celestialBodySymbolSize + new Point(30, 30)),
                 sourceRectangle: null,
                 color: Color.White,
                 rotation: 0f,
@@ -114,7 +114,7 @@ namespace SolWatch
             spriteBatch.Draw(
                 texture: ariesTexture,
                 destinationRectangle: new Rectangle(
-                    location: new Point (screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels + 60),
+                    location: new Point(screenCenter.X - maxOrbitRadiusInPixels, screenCenter.Y - maxOrbitRadiusInPixels + 60),
                     size: celestialBodySymbolSize),
                 sourceRectangle: null,
                 color: Color.White,
@@ -123,22 +123,39 @@ namespace SolWatch
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-            // Draw Neptune's Orbit
+            foreach (var planetRenderData in SolarSystemData.Data)
+                DrawPlanetOrbit(planetRenderData.Symbol, (int)(planetRenderData.Planet.SemiMajorAxis * kmToPixelsFactor), planetRenderData.Anomaly, planetRenderData.Color);
+
+            spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+        void DrawPlanetOrbit(Texture2D planetSprite, int orbitSize, float angle, Color color)
+        {
             spriteBatch.Draw(
                 texture: orbitTexture,
                 destinationRectangle: new Rectangle(
                     location: screenCenter,
-                    size: maxOrbitSizeInPixels),
+                    size: new(orbitSize * 2, orbitSize * 2)),
                 sourceRectangle: null,
-                color: Color.SeaGreen,
+                color: color,
                 rotation: 0f,
                 origin: orbitTexture.Center(),
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-            spriteBatch.End();
-
-            base.Draw(gameTime);
+            spriteBatch.Draw(
+                texture: planetSprite,
+                destinationRectangle: new Rectangle(
+                    location: screenCenter + new Point(0, -orbitSize), // todo: calculate cartesian position of planet sprite
+                    size: new(celestialBodySymbolLength, celestialBodySymbolLength)),
+                sourceRectangle: null,
+                color: color,
+                rotation: 0f,
+                origin: planetSprite.Center(),
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
         }
     }
 }
