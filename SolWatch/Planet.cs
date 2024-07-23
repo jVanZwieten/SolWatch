@@ -43,5 +43,13 @@ namespace SolWatch
 
             return Utilities.NormalizeAngle(anomaly);
         }
+
+        public float TrueLongitudeAtEpoch(DateTime epoch)
+        {
+            var trueLongitudeAtEpoch = (float)(LongitudeOfAscendingNode + ArgumentOfPeriapsis + Anomaly(epoch));
+
+            return Utilities.NormalizeAngle(trueLongitudeAtEpoch);
+        }
+
     }
 }

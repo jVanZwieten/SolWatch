@@ -1,4 +1,7 @@
-﻿namespace SolWatch.Tests
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SolWatch;
+
+namespace SolWatch.Tests
 {
     [TestClass]
     public class PlanetTests
@@ -27,6 +30,23 @@
 
             Assert.AreEqual(
                 Utilities.RadiansFromDegrees(expectedOutputDegrees),
+                result,
+                Utilities.RadiansFromDegrees(angularAccuracyDegrees));
+        }
+
+        [TestMethod]
+        [DataRow("Earth", 2023, 5, 20, 0.6934f)]
+        [DataRow("Earth", 2024, 8, 1, 1.9617f)]
+        [DataRow("Earth", 2025, 1, 6, 4.6798f)]
+        public void TrueLongitudeAtEpochTest(string planetName, int year, int month, int day, float expectedOutputRadians)
+        {
+            var testPlanet = testPlanets.FirstOrDefault(planet => planet.Name == planetName);
+            var epoch = new DateTime(year, month, day);
+
+            var result = testPlanet.TrueLongitudeAtEpoch(epoch);
+
+            Assert.AreEqual(
+                expectedOutputRadians,
                 result,
                 Utilities.RadiansFromDegrees(angularAccuracyDegrees));
         }
