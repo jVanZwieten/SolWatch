@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SolWatch
 {
@@ -17,6 +18,17 @@ namespace SolWatch
             PlanetName = planetName;
             SpriteName = sprite;
             Color = color;
+        }
+
+        public PlanetRenderData(PlanetRenderData original, float scale)
+        {
+            PlanetName = original.PlanetName;
+            SpriteName = original.SpriteName;
+            Color = original.Color;
+            Symbol = original.Symbol;
+            Radius = (int)MathF.Floor(original.Radius * scale);
+            Angle = original.Angle;
+
         }
     }
 }

@@ -9,8 +9,8 @@ namespace SolWatch
     public class Game1 : Game
     {
         readonly Point celestialBodySymbolSize = new(20, 20);
-        readonly Point ariesSymbolSize=new(50, 50);
-        readonly Point ariesSeekingArrowSize=new(70, 70);
+        readonly Point ariesSymbolSize = new(50, 50);
+        readonly Point ariesSeekingArrowSize = new(70, 70);
         readonly DateTime renderEpoch = DateTime.Now;
 
         Texture2D solTexture;
@@ -78,6 +78,10 @@ namespace SolWatch
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            var scrollDelta = InputManager.ScrollDelta;
+            if (scrollDelta < 0) Camera.DecrementZoom();
+            else if (scrollDelta > 1) Camera.IncrementZoom();
+
             base.Update(gameTime);
         }
 
@@ -128,7 +132,8 @@ namespace SolWatch
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
-            foreach (var renderData in SolarSystemData.RenderDatas)
+            var renderDatas = Camera.RenderPlanetsAtZoom(SolarSystemData.RenderDatas);
+            foreach (var renderData in renderDatas)
                 DrawPlanetOrbit(renderData.Symbol, renderData.Radius, renderData.Angle, renderData.Color);
 
             spriteBatch.End();
